@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRC C++ Docker Terminal</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #161b22;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h2 { color: #58a6ff; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            background: #0d1117;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+        button {
+            background: #238636;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background: #2ea043; }
+        pre {
+            background: #010409;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #7ee787;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>FRC Team - C++ Docker Runner</h2>
+        <div class="form-group">
+            <label for="fileSelect">Çalıştırılacak C++ Dosyası:</label>
+            <select id="fileSelect">
+                {% for file in files %}
+                <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="userInput">Program Girdileri (Stdin - Alt alta yazın):</label>
+            <textarea id="userInput" rows="4" placeholder="Örn: 
+KullaniciAdi
+1234
+Cek
+500"></textarea>
+        </div>
+        <button onclick="runCode()">Derle ve Çalıştır</button>
+        
+        <div class="form-group" style="margin-top: 20px;">
+            <label>Terminal Çıktısı:</label>
+            <pre id="output">Sonuçlar burada görünecek...</pre>
+        </div>
+    </div>
+
+    <script>
+        async function runCode() {
+            const filename = document.getElementById('fileSelect').value;
+            const input = document.getElementById('userInput').value;
+            const outputPre = document.getElementById('output');
+
+            outputPre.innerText = "Derleniyor ve çalıştırılıyor...";
+
+            try {
+                const response = await fetch('/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename, input })
+                });
+                const data = await response.json();
+                outputPre.innerText = data.output;
+            } catch (err) {
+                outputPre.innerText = "Bağlantı hatası: " + err;
+            }
+        }
+    </script>
+</body>
+</html>

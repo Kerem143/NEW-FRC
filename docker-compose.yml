@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  frc-cpp-runner:
+    build: .
+    container_name: frc_cpp_web_app
+    ports:
+      - "7784:7784"
+    volumes:
+      - ./codes:/app/codes
+    restart: always

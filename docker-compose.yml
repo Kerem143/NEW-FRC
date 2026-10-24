@@ -5,7 +5,7 @@ services:
     build: .
     container_name: frc_cpp_web_app
     ports:
-      - "7784:7784"
+      - "7789:7789"
     volumes:
       - ./codes:/app/codes
     restart: always
